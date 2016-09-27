@@ -3,14 +3,20 @@ package com.felit.tree.trie;
 import java.util.HashSet;
 
 /**
- * Trie树
+ * Trie树 字典树，前缀树
+ * 使用菃围:
+ * 第一：词频统计
+ * 第二: 前缀匹配
  */
 public class TrieNode {
     public TrieNode[] childNodes;
-    //    记录该节点的字符
+    // 记录该节点的字符
     public char nodeChar;
-    //词频统计
+
+    // 词频统计
     public int freq;
+
+    // 插入记录时的编码ID
     public HashSet<Integer> hashSet = new HashSet<Integer>();
 
     public TrieNode() {
@@ -18,21 +24,70 @@ public class TrieNode {
         freq = 0;
     }
 
-    public void AddTrieNode(TrieNode root, String word, int id) {
-
+    public void addTrieNode(TrieNode root, String word, int id) {
+        if (word.length() == 0) {
+            return;
+        }
+        int k = word.charAt(0) - 'a';
+        if (root.childNodes[k] == null) {
+            root.childNodes[k] = new TrieNode();
+            root.childNodes[k].nodeChar = word.charAt(0);
+        }
+        root.childNodes[k].hashSet.add(id);
+        String nextWord = word.substring(1);
+        if (nextWord.length() == 0) {
+            root.childNodes[k].freq++;
+        }
+        addTrieNode(root.childNodes[k], nextWord, id);
     }
 
-    public void DeleteTrieNode(TrieNode root, String word, int id) {
+    public void deleteTrieNode(TrieNode root, String word, int id) {
+        if (word.length() == 0) {
+            return;
+        }
+        int k = word.charAt(0) - 'a';
+        if (root.childNodes[k] == null) {
+            return;
+        }
 
+        String nextWord = word.substring(1);
+
+        if (word.length() == 0 && root.childNodes[k].freq > 0) {
+            root.childNodes[k].freq--;
+        }
+        root.childNodes[k].hashSet.remove(id);
+        deleteTrieNode(root, nextWord, id);
+    }
+
+    @Override
+    public String toString() {
+        return "TrieNode{" +
+                "nodeChar=" + nodeChar +
+                ", freq=" + freq +
+                ", hashSet=" + hashSet +
+                '}';
     }
 
     /**
      * 查找
-     * @param root
-     * @param word
+     *
      * @return
      */
-    public String[] getPrefix(TrieNode root, String word) {
+    public HashSet<Integer> search() {
         return null;
+    }
+
+    public int wordCount() {
+        return 0;
+    }
+
+    public void update() {
+
+    }
+
+    public static void main(String args[]) {
+        TrieNode root = new TrieNode();
+        root.addTrieNode(root, "hello", 109);
+        System.out.println(root.childNodes[7]);
     }
 }
