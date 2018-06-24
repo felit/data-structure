@@ -59,22 +59,28 @@ public class TrieNode {
         deleteTrieNode(root, nextWord, id);
     }
 
-    @Override
-    public String toString() {
-        return "TrieNode{" +
-                "nodeChar=" + nodeChar +
-                ", freq=" + freq +
-                ", hashSet=" + hashSet +
-                '}';
-    }
 
     /**
      * 查找
      *
      * @return
      */
-    public HashSet<Integer> search() {
-        return null;
+    public HashSet<Integer> search(String word) {
+        return search(this, word, new HashSet<Integer>());
+
+    }
+
+    public HashSet<Integer> search(TrieNode root, String word, HashSet<Integer> hashSet) {
+        if (word.length() == 0) {
+            return hashSet;
+        }
+        int k = word.charAt(0) - 'a';
+        String nextWord = word.substring(1);
+        if (nextWord.length() == 0) {
+            hashSet = root.childNodes[k].hashSet;
+        }
+        this.search(root.childNodes[k], nextWord, hashSet);
+        return hashSet;
     }
 
     public int wordCount() {
@@ -85,9 +91,22 @@ public class TrieNode {
 
     }
 
+
+    @Override
+    public String toString() {
+        return "TrieNode{" +
+                "nodeChar=" + nodeChar +
+                ", freq=" + freq +
+                ", hashSet=" + hashSet +
+                '}';
+    }
+
     public static void main(String args[]) {
         TrieNode root = new TrieNode();
         root.addTrieNode(root, "hello", 109);
         System.out.println(root.childNodes[7]);
+        HashSet<Integer> hash = new HashSet<Integer>();
+        hash.add(109);
+        root.search(root, "hell", hash);
     }
 }
